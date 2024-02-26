@@ -1,5 +1,5 @@
-import { chatType } from "@/app/room/[roomname]/page";
 import { motion } from "framer-motion";
+import { chatType } from "./types";
 
 export default function ChatBubble({
 	message,

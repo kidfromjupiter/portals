@@ -43,16 +43,26 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive message from room group
     async def chat_message(self, event):
-        message = event["message"]
         await self.send(text_data=json.dumps(event))
 
     async def chat_leave(self,event):
         await self.send(text_data=json.dumps(event))
 
-    async def chat_initial(self, event):
+    async def context_starttyping(self,event):
+        await self.send(text_data=json.dumps(event))
 
+    async def context_stoptyping(self,event):
+        await self.send(text_data=json.dumps(event))
+
+    async def context_onlinecount(self,event):
+        room =  await database_sync_to_async(ChatRoom.objects.get)(name=self.room_name)
+        onlineCount = await database_sync_to_async(room.users_online)()
+        await self.send(text_data=json.dumps({"type": "context.onlinecount", "count":onlineCount }))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    async def chat_initial(self, event):
         # Send message to WebSocket
         await self.send(text_data=json.dumps({"type": "chat.initial", "username": event["username"]}))
+
         self.username = event["username"]
         # database stuff    
         user,_ = await database_sync_to_async(SimpleUser.objects.get_or_create)(username=event["username"])

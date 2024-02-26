@@ -6,61 +6,10 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { chatInitial, chatMessage, chatType } from "../../../components/types";
 //types : chat.newUserJoined, chat.userLeft, chat.message,
-export enum chatType {
-	leave = "chat.leave",
-	initial = "chat.initial",
-	message = "chat.message",
-}
 
-class chatMessage {
-	type: chatType;
-	message?: string;
-	username: string;
-	constructor(message: string, username: string) {
-		this.type = chatType.message;
-		this.message = message;
-		this.username = username;
-	}
-	toJSON() {
-		return JSON.stringify({
-			type: this.type,
-			message: this.message,
-			username: this.username,
-		});
-	}
-}
-class chatUserLeft {
-	type: chatType;
-	username: string;
-	constructor(username: string) {
-		this.type = chatType.leave;
-		this.username = username;
-	}
-	toJSON() {
-		return JSON.stringify({
-			type: this.type,
-			username: this.username,
-		});
-	}
-}
-
-class chatInitial {
-	type: chatType;
-	username: string;
-	constructor(username: string) {
-		this.type = chatType.initial;
-		this.username = username;
-	}
-	toJSON() {
-		return JSON.stringify({
-			type: this.type,
-			username: this.username,
-		});
-	}
-}
 export default function Page({ params }: { params: { roomname: string } }) {
-	const [chatSocket, setChatSocket] = useState<WebSocket | null>(null);
 	const [username, setUsername] = useState<string | null>("");
 	const [messages, setMessages] = useState<
 		{ type: chatType; message?: string; username: string }[]
@@ -69,6 +18,9 @@ export default function Page({ params }: { params: { roomname: string } }) {
 	const updateMessages = (data: any) => {
 		setMessages([...messages, data]);
 	};
+	const [onlineCount, setOnlineCount] = useState<number>(0);
+	const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout>();
+	const [currentlyTyping, setCurrentlyTyping] = useState<string | null>("");
 	const { sendMessage, lastMessage, readyState } = useWebSocket(
 		"ws://localhost:8000/ws/chat/" + params.roomname + "/",
 		{
@@ -78,30 +30,57 @@ export default function Page({ params }: { params: { roomname: string } }) {
 			},
 			onMessage: (e) => {
 				let data = JSON.parse(e.data);
-				console.log(data);
-
+				if (data.type == "context.onlinecount") {
+					setOnlineCount(data.count);
+					return null;
+				}
+				if (data.type == "context.starttyping" && data.username != username) {
+					setCurrentlyTyping(data.username);
+					return null;
+				}
+				if (data.type == "context.stoptyping") {
+					setCurrentlyTyping(null);
+					return null;
+				}
 				updateMessages(data);
-				// if (data.type === "chat.message") {
-				// }
+				// if type is context.joinedrooms
 			},
 		}
 	);
 	useEffect(() => {
 		if (localStorage) {
 			setUsername(localStorage.getItem("username"));
+
+			//set recent room in localstorage
+			const recent = JSON.parse(localStorage.getItem("recentRoom") || "[]");
+			if (recent.includes(params.roomname)) {
+				return;
+			}
+			recent.push(params.roomname);
+			localStorage.setItem("recentRoom", JSON.stringify(recent));
 		}
 	}, []);
+	useEffect(() => {
+		if (readyState === ReadyState.OPEN) {
+			//@ts-ignore
+			sendMessage(JSON.stringify({ type: "context.onlinecount" }));
+		}
+	}, [readyState]);
 	return (
 		<div className="grid grid-rows-[10%_auto_10%] h-screen">
 			<div id="header" className="p-3 border-b-slate-200 border-1">
 				<div className="flex justify-between pb-1">
-					<div className="text-black text-2xl font-medium">Test room</div>
+					<div className="text-black text-2xl font-medium">
+						{params.roomname}
+					</div>
 					<div className="flex justify-between items-center">
 						<div className="w-3 rounded-full h-3 bg-emerald-400 mr-1"></div>
-						<div className="text-base text-slate-400">{10} online</div>
+						<div className="text-base text-slate-400">{onlineCount} online</div>
 					</div>
 				</div>
-				<div className="text-base text-slate-500">Jen is typing...</div>
+				<div className="text-base text-slate-500">
+					{currentlyTyping ? `${currentlyTyping} is typing...` : ""}
+				</div>
 			</div>
 			<motion.div
 				id="messageArea"
@@ -122,7 +101,15 @@ export default function Page({ params }: { params: { roomname: string } }) {
 					value={inputValue}
 					onValueChange={(e) => setInputValue(e)}
 					className="text-black"
+					onChange={() => {}}
 					onKeyDown={(e) => {
+						sendMessage(
+							JSON.stringify({
+								type: "context.starttyping",
+								username: username,
+							})
+						);
+						if (typingTimeout) clearTimeout(typingTimeout);
 						if (e.key === "Enter") {
 							sendMessage(
 								//@ts-ignore
@@ -130,6 +117,18 @@ export default function Page({ params }: { params: { roomname: string } }) {
 							);
 							setInputValue("");
 						}
+					}}
+					onKeyUp={() => {
+						setTypingTimeout(
+							setTimeout(() => {
+								sendMessage(
+									JSON.stringify({
+										type: "context.stoptyping",
+										username: username,
+									})
+								);
+							}, 3000)
+						);
 					}}
 				/>
 				<Button
