@@ -70,7 +70,7 @@ export default function Page({ params }: { params: { roomname: string } }) {
 		<div className="grid grid-rows-[10%_auto_10%] h-screen">
 			<div id="header" className="p-3 border-b-slate-200 border-1">
 				<div className="flex justify-between pb-1">
-					<div className="text-black text-2xl font-medium">
+					<div className="text-black text-2xl font-medium ml-8 md:ml-0">
 						{params.roomname}
 					</div>
 					<div className="flex justify-between items-center">

@@ -1,3 +1,5 @@
+import { useRouter } from "next/navigation";
+
 export default function Room({
 	roomName,
 	selected,
@@ -5,13 +7,14 @@ export default function Room({
 	roomName: string;
 	selected: boolean;
 }) {
+	const router = useRouter();
 	return (
 		<div
-			className={`flex flex-col cursor-pointer hover:bg-slate-100 ${
+			className={`flex flex-col cursor-pointer hover:bg-slate-300 ${
 				selected ? "bg-slate-200" : ""
 			}`}
 			onClick={() => {
-				window.location.href = "/room/" + roomName;
+				router.push(`/room/${roomName}`);
 			}}
 		>
 			<div className="flex justify-between py-3 items-center px-2">

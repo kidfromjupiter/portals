@@ -15,7 +15,7 @@ export default function ChatBubble({
 			<motion.div
 				layout
 				animate={{ opacity: 1, y: 0 }}
-				initial={{ opacity: 0, y: -10, zIndex: 0 }}
+				initial={{ opacity: 0, y: -10 }}
 				key={index}
 				className="bg-amber-200 text-amber-800 self-center rounded-md px-5 py-1 my-1"
 			>
