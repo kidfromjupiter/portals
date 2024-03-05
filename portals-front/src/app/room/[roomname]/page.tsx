@@ -88,7 +88,12 @@ export default function Page({ params }: { params: { roomname: string } }) {
 				className="overflow-auto p-3 flex flex-col"
 			>
 				{messages.map((message, index) => (
-					<ChatBubble message={message} index={index} username={username} />
+					<ChatBubble
+						message={message}
+						index={index}
+						username={username}
+						key={index}
+					/>
 				))}
 			</motion.div>
 			<div
