@@ -17,17 +17,15 @@ from channels.routing import URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator  
 from portalschat.routing import websocket_urlpatterns  
 from django.core.asgi import get_asgi_application
-import django
 
-
-django.setup()
+django_asgi_app = get_asgi_application()
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portalsDjango.settings')
 
 application = ProtocolTypeRouter(
     {
-        "http": get_asgi_application(),
+        "http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+            AuthMiddlewareStack(URLRouter(websocket_urlpatterns,))
         ),
         # Just HTTP for now. (We can add other protocols later.)
     }
