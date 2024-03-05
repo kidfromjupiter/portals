@@ -1,1 +1,1 @@
-web: pip install -r requirements.txt &&  cd portalsDjango && daphne portalsDjango.wsgi:application
+web: pip install -r requirements.txt &&  cd portalsDjango && daphne -b 0.0.0.0:$PORT portalsDjango.wsgi:application

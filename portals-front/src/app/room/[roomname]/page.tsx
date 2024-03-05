@@ -8,7 +8,7 @@ import React from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { chatInitial, chatMessage, chatType } from "../../../components/types";
 //types : chat.newUserJoined, chat.userLeft, chat.message,
-const host = "portals-react-fa5f50364561.herokuapp.com";
+const host = "portals-react-fa5f50364561.herokuapp.com:8000";
 export default function Page({ params }: { params: { roomname: string } }) {
 	const [username, setUsername] = useState<string | null>("");
 	const [messages, setMessages] = useState<
@@ -22,7 +22,7 @@ export default function Page({ params }: { params: { roomname: string } }) {
 	const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout>();
 	const [currentlyTyping, setCurrentlyTyping] = useState<string | null>("");
 	const { sendMessage, lastMessage, readyState } = useWebSocket(
-		`ws://${host}/ws/chat/${params.roomname}/`,
+		`wss://${host}/ws/chat/${params.roomname}/`,
 		{
 			onOpen: () => {
 				//@ts-ignore
