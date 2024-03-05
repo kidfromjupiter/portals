@@ -8,7 +8,7 @@ import React from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { chatInitial, chatMessage, chatType } from "../../../components/types";
 //types : chat.newUserJoined, chat.userLeft, chat.message,
-const host = "portals-react-fa5f50364561.herokuapp.com:8000";
+const host = "portals-react-fa5f50364561.herokuapp.com";
 export default function Page({ params }: { params: { roomname: string } }) {
 	const [username, setUsername] = useState<string | null>("");
 	const [messages, setMessages] = useState<
