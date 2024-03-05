@@ -1,1 +1,1 @@
-web : cd portalsDjango && env DJANGO_SETTINGS_MODULE=portalsDjango.settings.dev gunicorn portalsDjango.wsgi:application
+web : cd portalsDjango && pip install -r requirements.txt && gunicorn portalsDjango.wsgi:application
