@@ -16,4 +16,4 @@ RUN python manage.py migrate --settings=portalsDjango.settings.dev
 
 EXPOSE 4001
 
-CMD ["daphne", "portalsDjango.asgi:application", "--host", "0.0.0.0", "--port", "4001"]
+CMD ["daphne", "portalsDjango.asgi:application", "-b", "0.0.0.0", "-p", "4001"]
