@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
-RUN python manage.py migrate
+RUN python manage.py migrate --settings=portalsDjango.settings.dev
 
 EXPOSE 4001
 
