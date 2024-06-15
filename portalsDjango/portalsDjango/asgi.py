@@ -19,7 +19,7 @@ from channels.routing import URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator  
 from portalschat.routing import websocket_urlpatterns  
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portalsDjango.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portalsDjango.settings.dev')
 
 application = ProtocolTypeRouter(
     {
