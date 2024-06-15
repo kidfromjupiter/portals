@@ -1,0 +1,20 @@
+services:
+  django:
+    image: kidfromjupiter/portfolio:portals-backend
+    ports:
+      - "4001:4001"
+    environment:
+      HOSTNAME: lasan.digital
+
+  nextjs:
+    image: kidfromjupiter/portfolio:portals-front
+    ports:
+      - "4000:4000"
+    environment:
+      SENDER_USER: limahaliyana@gmail.com
+      SENDER_PW: hyf7VwcB9JEZSOAX
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+

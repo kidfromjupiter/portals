@@ -1,0 +1,42 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Django image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./portalsDjango
+          dockerfile: portalsDjango/Dockerfile
+          push: true
+          tags: kidfromjupiter/portfolio:portals-backend
+
+      - name: Build and push Next.js image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./portals-front
+          dockerfile: portals-front/Dockerfile
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://lasan.digital/api/
+          push: true
+          tags: kidfromjupiter/portfolio:portals-frontend
+
