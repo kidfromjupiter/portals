@@ -7,7 +7,7 @@ services:
       HOSTNAME: lasan.digital
 
   nextjs:
-    image: kidfromjupiter/portfolio:portals-front
+    image: kidfromjupiter/portfolio:portals-frontend
     ports:
       - "4000:4000"
     environment:
