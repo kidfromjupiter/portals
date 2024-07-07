@@ -89,7 +89,7 @@ export default function Sidebar() {
 					</Button>
 				</div>
 				<div className="flex flex-col items-center justify-evenly bg-slate-100">
-					<div className="text-black">Logged in as: manMan</div>
+					<div className="text-black">Logged in as: {localStorage.getItem("username")}</div>
 					<div className={`${LilyScriptOne.className} text-xl text-orange-600`}>
 						Portals
 					</div>

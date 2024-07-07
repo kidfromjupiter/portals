@@ -1,3 +1,5 @@
+ARG NEXT_PUBLIC_WS_HOST
+ENV NEXT_PUBLIC_WS_HOST $NEXT_PUBLIC_WS_HOST
 FROM node:22-bookworm-slim
 WORKDIR /app
 COPY package*.json ./
