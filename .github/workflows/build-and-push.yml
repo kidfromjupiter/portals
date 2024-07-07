@@ -28,7 +28,7 @@ jobs:
           context: ./portalsDjango
           dockerfile: portalsDjango/Dockerfile
           push: true
-          tags: kidfromjupiter/portfolio:portals-backend
+          tags: kidfromjupiter/personal:portals-backend
 
       - name: Build and push Next.js image
         uses: docker/build-push-action@v2
@@ -38,5 +38,5 @@ jobs:
           build-args: |
             NEXT_PUBLIC_WS_HOST=portals.lasan.digital
           push: true
-          tags: kidfromjupiter/portfolio:portals-frontend
+          tags: kidfromjupiter/personal:portals-frontend
 

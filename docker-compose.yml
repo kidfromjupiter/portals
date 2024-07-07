@@ -1,6 +1,6 @@
 services:
   django:
-    image: kidfromjupiter/portfolio:portals-backend
+    image: kidfromjupiter/personal:portals-backend
     ports:
       - "4001:4001"
     environment:
@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
 
   nextjs:
-    image: kidfromjupiter/portfolio:portals-frontend
+    image: kidfromjupiter/personal:portals-frontend
     ports:
       - "4000:4000"
     restart: unless-stopped
